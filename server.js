@@ -4,7 +4,7 @@ const csv = require('csv-parser')
 const { Readable } = require('stream')
 
 const app = express()
-const port = 3000 // A porta em que nosso servidor Node irá rodar
+const port = 1030 // A porta em que nosso servidor Node irá rodar
 
 // Configura o multer para processar os uploads em memória
 const storage = multer.memoryStorage()

@@ -98,7 +98,7 @@ v60024392abc,22000.76
     npm install
     ```
 
-## Executando a Aplicação (deploy)
+## Executando a Aplicação
 
 1.  **Inicie o servidor:**
     ```bash
