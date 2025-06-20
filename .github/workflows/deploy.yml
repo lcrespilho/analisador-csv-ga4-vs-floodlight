@@ -14,9 +14,6 @@ jobs:
           install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H louren.co.in > ~/.ssh/known_hosts
-          cat ~/.ssh/known_hosts
-          head ~/.ssh/id_rsa
-          ls -a ~/.ssh/
       - name: Deploy
         run: |
           ssh -T user@louren.co.in << EOF
