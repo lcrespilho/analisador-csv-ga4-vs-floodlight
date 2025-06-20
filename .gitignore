@@ -1,3 +1,2 @@
 node_modules
-ga4.csv
-flood.csv
+*.csv
