@@ -12,12 +12,14 @@ const upload = multer({ storage: storage })
 
 // Rota para servir a página HTML principal
 app.get('/', (req, res) => {
+  console.log('< route /')
   // Envia o arquivo index.html quando alguém acessa a raiz do site
   res.sendFile(__dirname + '/index.html')
 })
 
 // Rota para a análise, que aceita os dois arquivos
 app.post('/analyze', upload.fields([{ name: 'ga4File' }, { name: 'floodlightFile' }]), (req, res) => {
+  console.log('< route /analyze')
   // Verifica se os arquivos foram enviados
   if (!req.files || !req.files.ga4File || !req.files.floodlightFile) {
     return res.status(400).json({ error: 'Por favor, envie ambos os arquivos CSV.' })
