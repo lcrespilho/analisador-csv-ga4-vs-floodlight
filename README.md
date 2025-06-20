@@ -29,11 +29,9 @@ Para que a análise funcione corretamente, os arquivos CSV enviados devem seguir
 O arquivo CSV do GA4 deve conter pelo menos duas colunas: uma para o ID da transação e outra para a receita.
 
 -   **Coluna de ID da Transação**:
-    -   Deve ser a primeira coluna (índice 0).
-    -   Ou, o cabeçalho da coluna deve corresponder à expressão regular `/transaction.?Id/i` (por exemplo, "transactionId", "transaction Id", "Transaction ID", etc., case-insensitive).
+    -   O cabeçalho da coluna deve corresponder à expressão regular `/id/i` (por exemplo, "transactionId", "transaction Id", "Transaction ID", etc., case-insensitive).
 -   **Coluna de Receita**:
-    -   Deve ser a segunda coluna (índice 1).
-    -   Ou, o cabeçalho da coluna deve corresponder à expressão regular `/revenue/i` (por exemplo, "revenue", "Revenue", etc., case-insensitive).
+    -   O cabeçalho da coluna deve corresponder à expressão regular `/revenue/i` (por exemplo, "revenue", "Revenue", etc., case-insensitive).
     -   Os valores de receita devem ser numéricos (serão convertidos para `float`).
 
 **Exemplo de `ga4.csv`:**
@@ -56,11 +54,9 @@ v60024392abc,22000.76
 Similarmente, o arquivo CSV do Floodlight deve conter pelo menos duas colunas: uma para o ID da transação e outra para a receita.
 
 -   **Coluna de ID da Transação**:
-    -   Deve ser a primeira coluna (índice 0).
-    -   Ou, o cabeçalho da coluna deve corresponder à expressão regular `/transaction.?id|id/i` (por exemplo, "transaction_id", "transaction id", "id", "ID", etc., case-insensitive).
+    -   O cabeçalho da coluna deve corresponder à expressão regular `/id/i` (por exemplo, "transactionId", "transaction Id", "Transaction ID", etc., case-insensitive).
 -   **Coluna de Receita**:
-    -   Deve ser a segunda coluna (índice 1).
-    -   Ou, o cabeçalho da coluna deve corresponder à expressão regular `/revenue/i` (por exemplo, "revenue", "Revenue", etc., case-insensitive).
+    -   O cabeçalho da coluna deve corresponder à expressão regular `/revenue/i` (por exemplo, "revenue", "Revenue", etc., case-insensitive).
     -   Os valores de receita devem ser numéricos (serão convertidos para `float`).
 
 **Exemplo de `flood.csv`:**

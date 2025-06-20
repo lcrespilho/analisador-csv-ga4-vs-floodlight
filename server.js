@@ -34,9 +34,9 @@ app.post('/analyze', upload.fields([{ name: 'ga4File' }, { name: 'floodlightFile
     Readable.from(ga4Buffer)
       .pipe(
         csv({
-          mapHeaders: ({ header, index }) => {
-            if (header.match(/transaction.?Id/i) || index === 0) return 'id'
-            if (header.match(/revenue/i) || index === 1) return 'revenue'
+          mapHeaders: ({ header }) => {
+            if (header.match(/id/i)) return 'id'
+            if (header.match(/revenue/i)) return 'revenue'
             return null // Ignora outras colunas
           },
         })
@@ -53,9 +53,9 @@ app.post('/analyze', upload.fields([{ name: 'ga4File' }, { name: 'floodlightFile
     Readable.from(floodlightBuffer)
       .pipe(
         csv({
-          mapHeaders: ({ header, index }) => {
-            if (header.match(/transaction.?id|id/i) || index === 0) return 'id'
-            if (header.match(/revenue/i) || index === 1) return 'revenue'
+          mapHeaders: ({ header }) => {
+            if (header.match(/id/i)) return 'id'
+            if (header.match(/revenue/i)) return 'revenue'
             return null // Ignora outras colunas
           },
         })
