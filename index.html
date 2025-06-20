@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analisador de Transações GA4 vs Floodlight</title>
+  <!-- Incluindo Tailwind CSS para estilização rápida -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Usando a fonte Inter para um visual mais limpo */
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 flex items-center justify-center min-h-screen">
+
+  <div class="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8">
+
+    <!-- Cabeçalho -->
+    <div class="text-center mb-8">
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Analisador de Transações</h1>
+      <p class="text-gray-500 mt-2">Compare arquivos CSV do GA4 e Floodlight</p>
+    </div>
+
+    <!-- Formulário de Upload -->
+    <form id="uploadForm" class="space-y-6">
+      <!-- Upload GA4 -->
+      <div>
+        <label for="ga4File" class="block text-sm font-medium text-gray-700 mb-1">Arquivo de Transações do GA4</label>
+        <input type="file" id="ga4File" name="ga4File" required
+          class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-200 rounded-lg cursor-pointer">
+      </div>
+
+      <!-- Upload Floodlight -->
+      <div>
+        <label for="floodlightFile" class="block text-sm font-medium text-gray-700 mb-1">Arquivo de Transações do
+          Floodlight</v-label>
+          <input type="file" id="floodlightFile" name="floodlightFile" required
+            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 border border-gray-200 rounded-lg cursor-pointer">
+      </div>
+
+      <!-- Botão de Envio -->
+      <div>
+        <button type="submit" id="submitButton"
+          class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-150">
+          Analisar Arquivos
+        </button>
+      </div>
+    </form>
+
+    <!-- Seção de Resultados -->
+    <div id="results" class="mt-10 hidden">
+      <h2 class="text-xl font-bold text-center mb-6">Resultados da Análise</h2>
+      <div class="space-y-4">
+        <!-- Card para Ambos -->
+        <div id="bothResult" class="bg-green-50 p-4 rounded-lg border border-green-200"></div>
+        <!-- Card para Apenas GA4 -->
+        <div id="ga4OnlyResult" class="bg-yellow-50 p-4 rounded-lg border border-yellow-200"></div>
+        <!-- Card para Apenas Floodlight -->
+        <div id="floodlightOnlyResult" class="bg-red-50 p-4 rounded-lg border border-red-200"></div>
+      </div>
+    </div>
+
+    <!-- Mensagens de Feedback (Loading e Erro) -->
+    <div id="feedback" class="text-center mt-6"></div>
+
+  </div>
+
+  <script>
+    const uploadForm = document.getElementById('uploadForm');
+    const submitButton = document.getElementById('submitButton');
+    const resultsDiv = document.getElementById('results');
+    const feedbackDiv = document.getElementById('feedback');
+
+    // Função para formatar números como moeda
+    const formatCurrency = (number) => {
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(number);
+    };
+
+    uploadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Pega os arquivos do formulário
+      const ga4File = document.getElementById('ga4File').files[0];
+      const floodlightFile = document.getElementById('floodlightFile').files[0];
+
+      if (!ga4File || !floodlightFile) {
+        feedbackDiv.innerHTML = `<p class="text-red-600">Por favor, selecione os dois arquivos.</p>`;
+        return;
+      }
+
+      // Cria o corpo da requisição com os arquivos
+      const formData = new FormData();
+      formData.append('ga4File', ga4File);
+      formData.append('floodlightFile', floodlightFile);
+
+      // UI feedback
+      submitButton.disabled = true;
+      submitButton.innerText = 'Analisando...';
+      feedbackDiv.innerHTML = `<p class="text-blue-600">Processando os arquivos. Isso pode levar alguns segundos...</p>`;
+      resultsDiv.classList.add('hidden');
+
+      try {
+        // Envia os dados para o backend
+        const response = await fetch('/analyze', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Ocorreu um erro no servidor.');
+        }
+
+        const results = await response.json();
+
+        // Exibe os resultados
+        document.getElementById('bothResult').innerHTML = `
+          <h3 class="font-semibold text-green-800">Capturado em Ambos (GA4 e Floodlight)</h3>
+          <p class="text-green-700"><strong>Transações:</strong> ${results.both.count.toLocaleString('pt-BR')}</p>
+          <p class="text-green-700"><strong>Receita:</strong> ${formatCurrency(results.both.revenue)}</p>
+        `;
+        document.getElementById('ga4OnlyResult').innerHTML = `
+          <h3 class="font-semibold text-yellow-800">Capturado Apenas no GA4</h3>
+          <p class="text-yellow-700"><strong>Transações:</strong> ${results.onlyGa4.count.toLocaleString('pt-BR')}</p>
+          <p class="text-yellow-700"><strong>Receita:</strong> ${formatCurrency(results.onlyGa4.revenue)}</p>
+        `;
+        document.getElementById('floodlightOnlyResult').innerHTML = `
+          <h3 class="font-semibold text-red-800">Capturado Apenas no Floodlight</h3>
+          <p class="text-red-700"><strong>Transações:</strong> ${results.onlyFloodlight.count.toLocaleString('pt-BR')}</p>
+          <p class="text-red-700"><strong>Receita:</strong> ${formatCurrency(results.onlyFloodlight.revenue)}</p>
+        `;
+
+        resultsDiv.classList.remove('hidden');
+        feedbackDiv.innerHTML = ''; // Limpa o feedback de loading
+
+      } catch (error) {
+        feedbackDiv.innerHTML = `<p class="text-red-600 font-bold">Erro: ${error.message}</p>`;
+      } finally {
+        // Reativa o botão
+        submitButton.disabled = false;
+        submitButton.innerText = 'Analisar Arquivos';
+      }
+    });
+  </script>
+</body>
+
+</html>
