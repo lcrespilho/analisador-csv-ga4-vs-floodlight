@@ -1,80 +1,41 @@
 # Analisador de Transações GA4 vs Floodlight
 
-Este projeto é uma ferramenta web simples para analisar e comparar dados de transações de duas fontes: Google Analytics 4 (GA4) e Floodlight. Ele permite que os usuários façam upload de arquivos CSV de cada plataforma e visualizem um resumo das transações que são comuns a ambas, exclusivas do GA4 ou exclusivas do Floodlight, juntamente com a receita total para cada categoria.
+Este projeto é uma ferramenta web para analisar e comparar dados de transações do Google Analytics 4 (GA4) e Floodlight.
 
 ## Visão Geral
 
 A aplicação consiste em:
--   Um frontend HTML simples com Tailwind CSS para estilização, permitindo o upload de dois arquivos CSV.
+-   Um frontend HTML com Tailwind CSS e Chart.js, permitindo o upload de dois arquivos CSV.
 -   Um backend Node.js com Express.js para lidar com o upload de arquivos e a lógica de análise.
--   A biblioteca `multer` para gerenciar uploads de arquivos e `csv-parser` para processar os dados CSV.
+-   A biblioteca `multer` para gerenciar uploads, `csv-parser` para processar dados CSV e `uuid` para sessões de análise.
 
 ## Funcionalidades
 
--   Upload de arquivos CSV para dados de transações do GA4.
--   Upload de arquivos CSV para dados de transações do Floodlight.
--   Análise dos arquivos para identificar:
-    -   Transações e receita capturadas em ambas as plataformas.
-    -   Transações e receita capturadas apenas no GA4.
-    -   Transações e receita capturadas apenas no Floodlight.
--   Exibição dos resultados de forma clara na interface do usuário.
+-   Upload de arquivos CSV do GA4 e Floodlight.
+-   Análise dos arquivos para identificar transações e receita:
+    -   Capturadas em ambas as plataformas.
+    -   Capturadas apenas no GA4.
+    -   Capturadas apenas no Floodlight.
+-   **Agrupamento por Data**: Todos os resultados são agrupados por dia.
+-   **Gráficos Comparativos**: Exibição de gráficos de linha para comparar transações e receita diárias.
+-   **Download de Resultados**: Permite baixar as listas de IDs de transação para cada categoria (Apenas GA4, Apenas Floodlight, Ambos).
 -   Feedback visual durante o processamento e em caso de erros.
 
 ## Esquema dos Arquivos CSV
 
-Para que a análise funcione corretamente, os arquivos CSV enviados devem seguir um esquema específico para as colunas de ID da transação e receita. A aplicação é flexível em relação aos nomes exatos dos cabeçalhos, mas espera que as colunas relevantes estejam presentes.
+Para que a análise funcione corretamente, os arquivos CSV enviados **devem conter as três colunas a seguir**.
 
-### Arquivo CSV do GA4
+-   **Coluna de ID da Transação**: O cabeçalho deve corresponder a `/id/i` (ex: "transactionId", "ID").
+-   **Coluna de Receita**: O cabeçalho deve corresponder a `/revenue/i` (ex: "revenue", "Receita").
+-   **Coluna de Data**: O cabeçalho deve corresponder a `/date/i` (ex: "date", "Data"). O formato da data deve ser um que o construtor `new Date()` do JavaScript consiga interpretar (ex: `AAAA-MM-DD`, `MM/DD/AAAA`).
 
-O arquivo CSV do GA4 deve conter pelo menos duas colunas: uma para o ID da transação e outra para a receita.
-
--   **Coluna de ID da Transação**:
-    -   O cabeçalho da coluna deve corresponder à expressão regular `/id/i` (por exemplo, "transactionId", "transaction Id", "Transaction ID", etc., case-insensitive).
--   **Coluna de Receita**:
-    -   O cabeçalho da coluna deve corresponder à expressão regular `/revenue/i` (por exemplo, "revenue", "Revenue", etc., case-insensitive).
-    -   Os valores de receita devem ser numéricos (serão convertidos para `float`).
-
-**Exemplo de `ga4.csv`:**
+**Exemplo de CSV válido:**
 ```csv
-id,revenue
-v60020454abc,26290.90
-v60024392abc,22000.76
+date,id,revenue
+2023-10-26,v60020454abc,26290.90
+2023-10-27,v60024392abc,22000.76
 ...
 ```
-ou
-```csv
-Transaction ID,Transaction Revenue
-v60020454abc,26290.90
-v60024392abc,22000.76
-...
-```
-
-### Arquivo CSV do Floodlight
-
-Similarmente, o arquivo CSV do Floodlight deve conter pelo menos duas colunas: uma para o ID da transação e outra para a receita.
-
--   **Coluna de ID da Transação**:
-    -   O cabeçalho da coluna deve corresponder à expressão regular `/id/i` (por exemplo, "transactionId", "transaction Id", "Transaction ID", etc., case-insensitive).
--   **Coluna de Receita**:
-    -   O cabeçalho da coluna deve corresponder à expressão regular `/revenue/i` (por exemplo, "revenue", "Revenue", etc., case-insensitive).
-    -   Os valores de receita devem ser numéricos (serão convertidos para `float`).
-
-**Exemplo de `flood.csv`:**
-```csv
-id,revenue
-v60020454abc,26290.90
-v60024392abc,22000.76
-...
-```
-ou
-```csv
-TransactionId,Revenue
-v60020454abc,26290.90
-v60024392abc,22000.76
-...
-```
-
-**Nota:** Quaisquer outras colunas nos arquivos CSV serão ignoradas pela aplicação. Se uma linha não contiver um ID ou receita válidos, a aplicação não funciona.
 
 ## Pré-requisitos
 
@@ -117,7 +78,7 @@ v60024392abc,22000.76
 ## Pilha de Tecnologias
 
 -   **Backend**: Node.js, Express.js
--   **Frontend**: HTML, JavaScript (vanilla), Tailwind CSS (via CDN)
+-   **Frontend**: HTML, JavaScript (vanilla), Tailwind CSS (via CDN), Chart.js (via CDN)
 -   **Processamento de CSV**: `csv-parser`
 -   **Upload de Arquivos**: `multer`
 
