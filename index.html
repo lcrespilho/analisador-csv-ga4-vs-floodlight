@@ -26,15 +26,13 @@
 
     <form id="uploadForm" class="space-y-6">
       <div>
-        <label for="ga4File" class="block text-sm font-medium text-gray-700 mb-1">Arquivo do GA4 (com colunas 'id',
-          'revenue', 'date')</label>
+        <label for="ga4File" class="block text-sm font-medium text-gray-700 mb-1">Arquivo do GA4 (com colunas 'date', 'id', 'revenue')</label>
         <input type="file" id="ga4File" name="ga4File" required
           class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-200 rounded-lg cursor-pointer">
       </div>
 
       <div>
-        <label for="floodlightFile" class="block text-sm font-medium text-gray-700 mb-1">Arquivo do Floodlight (com
-          colunas 'id', 'revenue', 'date')</label>
+        <label for="floodlightFile" class="block text-sm font-medium text-gray-700 mb-1">Arquivo do Floodlight (com colunas 'date', 'id', 'revenue')</label>
         <input type="file" id="floodlightFile" name="floodlightFile" required
           class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 border border-gray-200 rounded-lg cursor-pointer">
       </div>
@@ -130,9 +128,9 @@
     const renderDownloadLinks = (analysisId) => {
       const downloadLinksDiv = document.getElementById('downloadLinks');
       downloadLinksDiv.innerHTML = `
-        <a href="/download/${analysisId}/both" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">Download IDs (Ambos)</a>
-        <a href="/download/${analysisId}/onlyGa4" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">Download IDs (GA4)</a>
-        <a href="/download/${analysisId}/onlyFloodlight" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">Download IDs (Floodlight)</a>
+        <a href="download/${analysisId}/both" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">Download IDs (Ambos)</a>
+        <a href="download/${analysisId}/onlyGa4" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">Download IDs (GA4)</a>
+        <a href="download/${analysisId}/onlyFloodlight" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">Download IDs (Floodlight)</a>
       `;
     };
 
